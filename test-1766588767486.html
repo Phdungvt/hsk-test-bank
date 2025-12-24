@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Tiếng Trung - HSK 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        const TEST_DATA = {"listening_tf":{"title":"Nghe: Phán đoán đúng sai (3 điểm)","questions":[{"id":1,"audio_script":"我父母决定下个月举行婚礼，但我还没清楚应该穿什么衣服。","statement":"说话人的父母已经结婚了。","answer":"F"},{"id":2,"audio_script":"今年暑假学校安排我们去附近的公司实习。这是一次很好的学习机会。","statement":"学生们暑假会去公司实习。","answer":"T"},{"id":3,"audio_script":"虽然我的姐姐已经毕业了，但在生活和学习上，我们还经常互相帮助。","statement":"他们现在互相不联系了。","answer":"F"}]},"listening_mc":{"title":"Nghe: Chọn đáp án đúng (3 điểm)","questions":[{"id":4,"audio_script":"男：你觉得这个学期我们应该参加什么体育活动?\n女：我建议我们报名打篮球。以前我们在中学的时候打得很好。","question_text":"他们决定参加什么活动？","options":[{"id":"A","text":"打篮球"},{"id":"B","text":"游泳"},{"id":"C","text":"跑步"},{"id":"D","text":"踢足球"}],"answer":"A"},{"id":5,"audio_script":"女：李阿姨，您好！听说您下周要搬家，是真的吗？\n男：是的，我们要搬到离女儿工作单位更近的地方去。谢谢你这几年对我的照顾。","question_text":"李阿姨为什么要搬家？","options":[{"id":"A","text":"不喜欢现在的房子"},{"id":"B","text":"离女儿的单位近一点"},{"id":"C","text":"她觉得邻居不好"},{"id":"D","text":"现在的地方太吵"}],"answer":"B"},{"id":6,"audio_script":"男：教授，我下个月就要毕业了，请问找工作时应该注意什么？\n女：最重要的就是准备好一份详细的简历，并且对自己有信心。","question_text":"说话人认为找工作最重要的是什么？","options":[{"id":"A","text":"找到好的学校"},{"id":"B","text":"详细的简历"},{"id":"C","text":"有信心"},{"id":"D","text":"多参加活动"}],"answer":"C"}]},"reading_vocab":{"title":"Đọc: Chọn từ điền trống (2 điểm)","options":[{"id":"A","text":"安排"},{"id":"B","text":"毕业"},{"id":"C","text":"互相"},{"id":"D","text":"附近"},{"id":"E","text":"清楚"}],"questions":[{"id":7,"text":"这件事还需要跟我的父母_____一下，才能决定。","answer":"A"},{"id":8,"text":"他明天就要_____了，我们一起去学校送送他吧。","answer":"B"},{"id":9,"text":"我们是好朋友，在学习上经常_____帮助。","answer":"C"},{"id":10,"text":"我家_____有一个超市，买东西非常方便。","answer":"D"}]},"reading_comp":{"title":"Đọc: Đọc hiểu đoạn văn (2 điểm)","passage":"我的高中生活很愉快，主要是因为我遇到了一位很好的老师。他不仅认真地教我们知识，还常常鼓励我们要相信自己。现在我已经大学毕业，找到了满意的工作。虽然工作很忙，但我每年暑假都会去看望这位老师。父母也一直教育我，要记住别人的帮助，要懂得感谢。","questions":[{"id":11,"text":"说话人为什么觉得高中生活愉快？","options":[{"id":"A","text":"遇到了一位好老师"},{"id":"B","text":"学习成绩很好"},{"id":"C","text":"他大学毕业了"},{"id":"D","text":"工作很顺利"}],"answer":"A"},{"id":12,"text":"作者的父母教育他要做什么？","options":[{"id":"A","text":"安排时间休息"},{"id":"B","text":"努力工作"},{"id":"C","text":"要懂得感谢别人"},{"id":"D","text":"常去看望老师"}],"answer":"C"}]},"writing_order":{"title":"Viết: Sắp xếp câu (3 điểm)","questions":[{"id":13,"segments":["A. 我们","B. 互相","C. 在生活上","D. 帮助"],"answer":"A C B D"},{"id":14,"segments":["A. 记得","B. 老师","C. 清楚","D. 说的话","E. 我","F. 不"],"answer":"E F C A B D"},{"id":15,"segments":["A. 毕业典礼","B. 参加","C. 的","D. 谁","E. 是"],"answer":"D E B A C"}]}};
+        const CONFIG = {"levelGroup":"Trung cấp","hskLevel":"HSK 4","topic":"Gia đình & Trường học","types":{"listening_tf":{"id":"listening_tf","label":"Nghe: Đúng/Sai","group":"listening","enabled":true,"count":3,"points":1},"listening_mc":{"id":"listening_mc","label":"Nghe: Trắc nghiệm","group":"listening","enabled":true,"count":3,"points":1},"reading_vocab":{"id":"reading_vocab","label":"Đọc: Điền từ","group":"reading","enabled":true,"count":4,"points":0.5},"reading_comp":{"id":"reading_comp","label":"Đọc: Đọc hiểu","group":"reading","enabled":true,"count":1,"points":2},"writing_order":{"id":"writing_order","label":"Viết: Sắp xếp câu","group":"writing","enabled":true,"count":3,"points":1},"writing_trans":{"id":"writing_trans","label":"Viết: Dịch Việt-Trung","group":"writing","enabled":false,"count":2,"points":1.5}}};
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen pb-20">
+    <div id="app-root"></div>
+    <script>
+        let userAnswers = {};
+        let showResults = false;
+        let score = 0;
+        let playingId = null;
+
+        function renderApp() {
+            const root = document.getElementById('app-root');
+            root.innerHTML = `
+                <div class="bg-blue-800 text-white p-4 shadow-md sticky top-0 z-50">
+                    <div class="max-w-4xl mx-auto flex justify-between items-center">
+                        <h1 class="font-bold text-xl"><i class="fas fa-graduation-cap mr-2"></i>Bài Làm Học Sinh</h1>
+                        <div class="text-sm">Mã đề: ${Date.now().toString().slice(-6)}</div>
+                    </div>
+                </div>
+                
+                <div class="max-w-4xl mx-auto p-4 mt-6">
+                    <div class="bg-white p-8 rounded-t-xl shadow border-b-2 border-dashed border-gray-300 text-center">
+                        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2 uppercase">${CONFIG.hskLevel} - ${CONFIG.topic}</h2>
+                        <div class="mt-4 p-4 bg-yellow-50 text-yellow-800 rounded inline-block text-sm">
+                            <i class="fas fa-info-circle mr-1"></i> Hãy bật loa để làm phần nghe
+                        </div>
+                        <div class="flex justify-between text-gray-600 px-8 border-t pt-4 mt-6">
+                            <span>Học sinh: <input type="text" class="border-b border-gray-300 focus:outline-none" placeholder="Nhập tên của bạn..."></span>
+                            <span id="score-display" class="font-bold text-xl text-red-600">${showResults ? score + '/' + 13 : ''}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-b-xl shadow-lg space-y-8">
+                        ${Object.keys(TEST_DATA).map(key => renderSection(key, TEST_DATA[key])).join('')}
+                    </div>
+                </div>
+
+                <div class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+                     ${!showResults ? 
+                        `<button onclick="checkAnswers()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg transform transition active:scale-95">
+                            <i class="fas fa-check-circle mr-2"></i> Nộp Bài
+                        </button>` : 
+                        `<button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg font-medium">
+                            <i class="fas fa-redo mr-2"></i> Làm Lại
+                        </button>`
+                    }
+                </div>
+            `;
+        }
+
+        function playAudio(text, id) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleInput(key, value) {
+            if(showResults) return;
+            userAnswers[key] = value;
+            const el = document.getElementById('input-'+key);
+            if(el) el.value = value;
+        }
+
+        function checkAnswers() {
+            let totalCorrectPoints = 0;
+            
+            Object.keys(TEST_DATA).forEach(sectionKey => {
+                const section = TEST_DATA[sectionKey];
+                const sectionConfig = Object.values(CONFIG.types).find(t => sectionKey.includes(t.id));
+                const pointsPerQ = sectionConfig ? sectionConfig.points : 0;
+
+                section.questions.forEach(q => {
+                    const key = sectionKey + '-' + q.id;
+                    const userAns = (userAnswers[key] || '').trim().toUpperCase();
+                    const correctAns = (q.answer || q.chinese_answer || '').trim().toUpperCase();
+                    
+                    let isCorrect = userAns === correctAns;
+                    if(isCorrect) totalCorrectPoints += pointsPerQ;
+
+                    const container = document.getElementById('container-'+key);
+                    if(container) {
+                        if(isCorrect) {
+                            container.classList.add('bg-green-50', 'border-green-200');
+                            if(!container.querySelector('.result-msg')) {
+                                container.insertAdjacentHTML('beforeend', '<div class="result-msg text-green-600 font-bold mt-1 text-sm"><i class="fas fa-check"></i> Chính xác</div>');
+                            }
+                        } else {
+                            container.classList.add('bg-red-50', 'border-red-200');
+                             if(!container.querySelector('.result-msg')) {
+                                container.insertAdjacentHTML('beforeend', '<div class="result-msg text-red-600 font-bold mt-1 text-sm"><i class="fas fa-times"></i> Đáp án: ' + correctAns + '</div>');
+                            }
+                        }
+                    }
+                    
+                    const inputs = document.querySelectorAll('[name="'+key+'"]');
+                    inputs.forEach(i => i.disabled = true);
+                });
+            });
+
+            score = totalCorrectPoints.toFixed(1);
+            showResults = true;
+            renderApp();
+            
+            // Re-apply visuals because re-render wipes DOM
+            Object.keys(TEST_DATA).forEach(sectionKey => {
+                const section = TEST_DATA[sectionKey];
+                section.questions.forEach(q => {
+                    const key = sectionKey + '-' + q.id;
+                    const userAns = (userAnswers[key] || '').trim().toUpperCase();
+                    const correctAns = (q.answer || q.chinese_answer || '').trim().toUpperCase();
+                    const isCorrect = userAns === correctAns;
+                    
+                    const container = document.getElementById('container-'+key);
+                    if(container) {
+                         if(isCorrect) {
+                            container.classList.add('bg-green-50', 'border-green-200');
+                            container.insertAdjacentHTML('beforeend', '<div class="result-msg text-green-600 font-bold mt-1 text-sm"><i class="fas fa-check"></i> Chính xác</div>');
+                        } else {
+                            container.classList.add('bg-red-50', 'border-red-200');
+                            container.insertAdjacentHTML('beforeend', '<div class="result-msg text-red-600 font-bold mt-1 text-sm"><i class="fas fa-times"></i> Đáp án: ' + correctAns + '</div>');
+                        }
+                    }
+                    const textInput = document.getElementById('input-'+key);
+                    if(textInput) textInput.value = userAnswers[key] || '';
+                });
+            });
+        }
+
+        function renderSection(key, data) {
+            let content = '';
+            
+            if (key.includes('listening') || key.includes('reading_comp')) {
+                content = data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    let optionsHtml = '';
+                    
+                    if(key.includes('_tf')) {
+                         optionsHtml = `
+                            <div class="flex gap-2">
+                                <button onclick="handleInput('${qKey}', 'T'); this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-600','text-white')); this.classList.add('bg-blue-600','text-white')" data-key="${qKey}" data-val="T" class="px-4 py-2 border rounded hover:bg-gray-100">Đúng</button>
+                                <button onclick="handleInput('${qKey}', 'F'); this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-600','text-white')); this.classList.add('bg-blue-600','text-white')" data-key="${qKey}" data-val="F" class="px-4 py-2 border rounded hover:bg-gray-100">Sai</button>
+                            </div>
+                         `;
+                    } else {
+                         optionsHtml = `<div class="grid grid-cols-1 gap-2 mt-2">` + 
+                            q.options.map(opt => `
+                                <button onclick="handleInput('${qKey}', '${opt.id}'); this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','border-blue-500')); this.classList.add('bg-blue-100','border-blue-500')" data-key="${qKey}" data-val="${opt.id}" class="text-left px-4 py-2 border rounded hover:bg-gray-50 flex">
+                                    <span class="font-bold mr-2">${opt.id}.</span> ${opt.text}
+                                </button>
+                            `).join('') + 
+                         `</div>`;
+                    }
+
+                    return `
+                        <div id="container-${qKey}" class="mb-4 p-3 border rounded transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="font-bold text-gray-500">${q.id}.</span>
+                                ${q.audio_script ? `<button onclick="playAudio('${q.audio_script}')" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200"><i class="fas fa-volume-up"></i></button>` : ''}
+                                <span>${q.statement || q.question_text || q.text}</span>
+                            </div>
+                            ${optionsHtml}
+                        </div>
+                    `;
+                }).join('');
+                
+                if(data.passage) content = `<div class="bg-orange-50 p-4 rounded mb-4 font-serif text-lg leading-relaxed">${data.passage}</div>` + content;
+            } else {
+                let pool = '';
+                if(data.options) {
+                    pool = `<div class="flex flex-wrap gap-2 mb-4 p-3 bg-gray-100 rounded justify-center">` + 
+                        data.options.map(o => `<span class="bg-white px-2 py-1 border rounded shadow-sm"><b>${o.id}:</b> ${o.text}</span>`).join('') +
+                    `</div>`;
+                }
+                
+                content = pool + data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    return `
+                        <div id="container-${qKey}" class="mb-4 p-3 border rounded">
+                             <div class="mb-2">
+                                <span class="font-bold text-gray-500 mr-2">${q.id}.</span>
+                                ${q.text || q.vietnamese || (q.segments ? q.segments.join(' / ') : '')}
+                             </div>
+                             <input type="text" id="input-${qKey}" oninput="handleInput('${qKey}', this.value.toUpperCase())" placeholder="Nhập đáp án..." class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 uppercase font-bold text-gray-700">
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            return `
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-blue-800 mb-4 border-b pb-2 uppercase">${data.title}</h3>
+                    ${content}
+                </div>
+            `;
+        }
+
+        renderApp();
+    </script>
+</body>
+</html>
+    
