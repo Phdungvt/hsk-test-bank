@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Tiếng Trung - HSK 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        const TEST_DATA = {"listening_tf":{"title":"Nghe: Phán đoán đúng sai (T/F)","questions":[{"id":1,"audio_script":"Wǒ zài xuéxiào xuéxí Hànyǔ.","statement":"他在学校学习汉语。","answer":"T"},{"id":2,"audio_script":"Tā yǒu sān gè xuésheng.","statement":"她没有学生。","answer":"F"},{"id":3,"audio_script":"Wǒ de māma shì lǎoshī.","statement":"他的妈妈是老师。","answer":"T"}]},"listening_mc":{"title":"Nghe: Chọn đáp án đúng (A/B/C)","questions":[{"id":1,"audio_script":"Wǒ jiā yǒu bàba, māma, hái yǒu wǒ.","question_text":"他家有几个人？","options":[{"id":"A","text":"三"},{"id":"B","text":"二"},{"id":"C","text":"四"}],"answer":"A"},{"id":2,"audio_script":"Nǐ shì shéi? Wǒ shì Lǐ Míng.","question_text":"他叫什么名字？","options":[{"id":"A","text":"李老师"},{"id":"B","text":"李明"},{"id":"C","text":"学生"}],"answer":"B"},{"id":3,"audio_script":"Lǎoshī zài nǎr? Lǎoshī zài xuéxiào de jiàoshì lǐ.","question_text":"老师在哪儿？","options":[{"id":"A","text":"学校"},{"id":"B","text":"家"},{"id":"C","text":"美国"}],"answer":"A"}]},"reading_vocab":{"title":"Đọc: Chọn từ điền trống","options":[{"id":"A","text":"谁"},{"id":"B","text":"在"},{"id":"C","text":"几"},{"id":"D","text":"个"},{"id":"E","text":"和"}],"questions":[{"id":1,"text":"这__人是你的老师吗？","answer":"D"},{"id":2,"text":"我的爸爸__妈妈都是医生。","answer":"E"},{"id":3,"text":"你家有__个人？","answer":"C"},{"id":4,"text":"请问，你__哪儿工作？","answer":"B"}]},"reading_matching":{"title":"Đọc: Ghép cột (Nối 2 cột A và B)","questions":[{"id":1,"column_a":["1. 学","2. 在","3. 看","4. 他"],"column_b":["A. 老师","B. 谁","C. 习","D. 哪儿"],"options":[{"id":"A","text":"1-C, 2-D, 3-B, 4-A"},{"id":"B","text":"1-C, 2-A, 3-D, 4-B"},{"id":"C","text":"1-B, 2-D, 3-C, 4-A"}],"answer":"A"},{"id":2,"column_a":["1. 爸","2. 汉","3. 校","4. 有"],"column_b":["A. 语","B. 学","C. 妈","D. 人"],"options":[{"id":"A","text":"1-A, 2-C, 3-B, 4-D"},{"id":"B","text":"1-C, 2-A, 3-B, 4-D"},{"id":"C","text":"1-C, 2-B, 3-D, 4-A"}],"answer":"B"}]},"reading_conversation":{"title":"Đọc: Sắp xếp hội thoại","questions":[{"id":1,"sentences":[{"label":"A","text":"你爸爸是医生吗？"},{"label":"B","text":"不是，他是一个老师。"}],"answer":"AB"},{"id":2,"sentences":[{"label":"A","text":"你学习汉语吗？"},{"label":"B","text":"是的，我在学校学习。"}],"answer":"AB"}]},"reading_comp":{"title":"Đọc: Đọc hiểu đoạn văn","passage":"我叫李明，我是一个学生。我在学校学习汉语。我的学校很大。我家有四个人：爸爸、妈妈、哥哥和我。我的爸爸是医生，我的妈妈是老师。我的哥哥也在学习汉语。我们都很爱学习。我每天下午五点回家。","questions":[{"id":1,"text":"李明是做什么的？","options":[{"id":"A","text":"学生"},{"id":"B","text":"老师"}],"answer":"A"},{"id":2,"text":"李明家有几个人？","options":[{"id":"A","text":"三"},{"id":"B","text":"四"}],"answer":"B"},{"id":3,"text":"谁是老师？","options":[{"id":"A","text":"爸爸"},{"id":"B","text":"妈妈"}],"answer":"B"}]},"writing_order":{"title":"Viết: Sắp xếp từ thành câu","questions":[{"id":1,"segments":["学校","在","学习","我"],"answer":"我在学校学习。"},{"id":2,"segments":["谁","是","这","个","人"],"answer":"这个人是谁？"},{"id":3,"segments":["老师","喜欢","我们","很"],"answer":"我们很喜欢老师。"}]}};
+        const CONFIG = {"levelGroup":"Sơ cấp","hskLevel":"HSK 1","topic":"Gia đình & Trường học","teacherName":"","googleSheetUrl":"","types":{"listening_tf":{"id":"listening_tf","label":"Nghe: Đúng/Sai","group":"listening","enabled":true,"count":3,"points":1},"listening_mc":{"id":"listening_mc","label":"Nghe: Trắc nghiệm","group":"listening","enabled":true,"count":3,"points":1},"reading_vocab":{"id":"reading_vocab","label":"Đọc: Điền từ đơn","group":"reading","enabled":true,"count":4,"points":0.5},"reading_matching":{"id":"reading_matching","label":"Đọc: Ghép cột (Nối)","group":"reading","enabled":true,"count":2,"points":1},"reading_conversation":{"id":"reading_conversation","label":"Đọc: Xếp hội thoại","group":"reading","enabled":true,"count":2,"points":1.5},"reading_comp":{"id":"reading_comp","label":"Đọc: Đọc hiểu đoạn văn","group":"reading","enabled":true,"count":3,"points":2},"reading_cloze":{"id":"reading_cloze","label":"Đọc: Điền đoạn văn (Combo)","group":"reading","enabled":false,"count":1,"points":2},"writing_order":{"id":"writing_order","label":"Viết: Sắp xếp câu","group":"writing","enabled":true,"count":3,"points":1},"writing_trans":{"id":"writing_trans","label":"Viết: Dịch Việt-Trung","group":"writing","enabled":false,"count":2,"points":1.5}}};
+    </script>
+    <style>
+        .warning-toast { animation: slideIn 0.5s ease-out forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .col-match-line { border-bottom: 1px dashed #e5e7eb; padding: 8px 0; }
+        .col-match-line:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-20 select-none">
+    <div id="app-root"></div>
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        let userAnswers = {};
+        let showResults = false;
+        let score = 0;
+        let monitoringData = { thoatManHinh: 0, saoChep: 0, dan: 0 };
+
+        function showWarning(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'warning-toast bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-center max-w-sm';
+            toast.innerHTML = '<i class="fas fa-exclamation-triangle mr-3 text-xl"></i><div><p class="font-bold">Cảnh báo gian lận</p><p class="text-sm">'+msg+'</p></div>';
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        document.addEventListener('visibilitychange', () => { if (document.hidden && !showResults) { monitoringData.thoatManHinh++; showWarning('Bạn vừa thoát màn hình! Hệ thống đã ghi nhận.'); }});
+        document.addEventListener('copy', (e) => { if(!showResults) { monitoringData.saoChep++; showWarning('Hành động SAO CHÉP bị cấm!'); e.preventDefault(); }});
+        document.addEventListener('paste', (e) => { if(!showResults) { monitoringData.dan++; showWarning('Hành động DÁN bị cấm!'); e.preventDefault(); }});
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        function renderApp() {
+            const root = document.getElementById('app-root');
+            const teacherDisplay = CONFIG.teacherName ? `<div class="text-blue-100 text-sm mt-1"><i class="fas fa-chalkboard-teacher mr-1"></i> Giáo viên: <b>${CONFIG.teacherName}</b></div>` : '';
+
+            root.innerHTML = `
+                <div class="bg-blue-800 text-white p-4 shadow-md sticky top-0 z-40">
+                    <div class="max-w-4xl mx-auto flex justify-between items-center">
+                        <div><h1 class="font-bold text-xl"><i class="fas fa-graduation-cap mr-2"></i>Bài Làm Học Sinh</h1>${teacherDisplay}</div>
+                        <div class="text-right text-sm"><div class="opacity-80">Mã đề: ${Date.now().toString().slice(-6)}</div><div class="font-bold">${CONFIG.hskLevel}</div></div>
+                    </div>
+                </div>
+                <div class="max-w-4xl mx-auto p-4 mt-6">
+                    <div class="bg-white p-8 rounded-t-xl shadow border-b-2 border-dashed border-gray-300 text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-red-100 text-red-600 px-3 py-1 rounded-bl-lg text-xs font-bold border-l border-b border-red-200"><i class="fas fa-shield-alt mr-1"></i> Giám sát bật</div>
+                        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2 uppercase">${CONFIG.topic}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 px-4 md:px-8 border-t pt-6 mt-8">
+                            <div class="text-left"><label class="block text-xs font-bold uppercase text-gray-400 mb-1">Họ và tên (*)</label><input id="student-name" type="text" class="w-full text-lg font-medium border-b-2 border-gray-300 focus:border-blue-600 focus:outline-none py-1" placeholder="Nhập họ tên..."></div>
+                            <div class="text-left"><label class="block text-xs font-bold uppercase text-gray-400 mb-1">Lớp (*)</label><input id="student-class" type="text" class="w-full text-lg font-medium border-b-2 border-gray-300 focus:border-blue-600 focus:outline-none py-1" placeholder="Ví dụ: 12A1..."></div>
+                        </div>
+                         <div class="text-center mt-6">
+                                <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Kết quả</label>
+                                <span id="score-display" class="font-bold text-4xl text-gray-300">${showResults ? score : '--'}<span class="text-xl text-gray-400">/22</span></span>
+                                <div id="submit-status" class="h-6 text-sm font-medium mt-2"></div>
+                         </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-b-xl shadow-lg space-y-8 min-h-[400px]">
+                        ${Object.keys(TEST_DATA).map(key => renderSection(key, TEST_DATA[key])).join('')}
+                    </div>
+                </div>
+                <div class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-40">
+                     ${!showResults ? 
+                        `<button id="submit-btn" onclick="checkAnswers()" class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-10 py-3 rounded-full font-bold shadow-lg transform transition active:scale-95 flex items-center text-lg"><i class="fas fa-check-circle mr-2"></i> Nộp Bài</button>` : 
+                        `<button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-full font-medium flex items-center shadow-lg"><i class="fas fa-redo mr-2"></i> Làm Lại</button>`
+                    }
+                </div>
+            `;
+        }
+
+        function handlePlayAudio(btn) {
+            const text = btn.getAttribute('data-text'); if(!text) return;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.classList.add('bg-blue-200');
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'zh-CN'; utterance.rate = 0.8;
+            utterance.onend = () => { btn.innerHTML = originalHTML; btn.classList.remove('bg-blue-200'); };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleInput(key, value) {
+            if(showResults) return;
+            userAnswers[key] = value;
+            const el = document.getElementById('input-'+key); if(el) el.value = value;
+        }
+
+        async function checkAnswers() {
+            const name = document.getElementById('student-name').value.trim();
+            const className = document.getElementById('student-class').value.trim();
+            if(!name || !className) { alert('Vui lòng nhập đầy đủ Họ tên và Lớp!'); return; }
+            if(!confirm('Bạn có chắc chắn muốn nộp bài?')) return;
+
+            document.getElementById('submit-btn').disabled = true;
+            let totalCorrectPoints = 0; let answerDetails = []; 
+
+            Object.keys(TEST_DATA).forEach(sectionKey => {
+                const section = TEST_DATA[sectionKey];
+                const sectionConfig = Object.values(CONFIG.types).find(t => sectionKey.includes(t.id));
+                const pointsPerQ = sectionConfig ? sectionConfig.points : 0;
+
+                section.questions.forEach(q => {
+                    const key = sectionKey + '-' + q.id;
+                    const userAns = (userAnswers[key] || '').trim().toUpperCase().replace(/\s/g, ''); 
+                    const correctAns = (q.answer || q.chinese_answer || '').trim().toUpperCase().replace(/\s/g, '');
+                    
+                    let isCorrect = userAns === correctAns;
+                    if(isCorrect) totalCorrectPoints += pointsPerQ;
+                    
+                    answerDetails.push({ questionNumber: key, isCorrect: isCorrect });
+
+                    const container = document.getElementById('container-'+key);
+                    if(container) {
+                        const oldMsg = container.querySelectorAll('.result-msg'); oldMsg.forEach(el => el.remove());
+                        if(isCorrect) {
+                            container.classList.add('bg-green-50', 'border-green-200');
+                            container.insertAdjacentHTML('beforeend', '<div class="result-msg text-green-600 font-bold mt-2 text-sm"><i class="fas fa-check-circle"></i> Chính xác</div>');
+                        } else {
+                            container.classList.add('bg-red-50', 'border-red-200');
+                            container.insertAdjacentHTML('beforeend', '<div class="result-msg text-red-600 font-bold mt-2 text-sm"><i class="fas fa-times-circle"></i> Đáp án đúng: ' + (q.answer || q.chinese_answer) + '</div>');
+                        }
+                    }
+                });
+            });
+
+            score = totalCorrectPoints.toFixed(1);
+            showResults = true;
+            
+            if(CONFIG.googleSheetUrl) {
+                const statusDiv = document.getElementById('submit-status');
+                statusDiv.innerHTML = '<span class="text-blue-600"><i class="fas fa-sync fa-spin"></i> Đang gửi...</span>';
+                try {
+                    const formData = new URLSearchParams();
+                    formData.append('timestamp', new Date().toLocaleString('vi-VN'));
+                    formData.append('name', name); formData.append('class', className);
+                    formData.append('score', score + '/' + 22);
+                    formData.append('examCode', CONFIG.topic);
+                    formData.append('monitoringLog', JSON.stringify(monitoringData));
+                    formData.append('answerDetails', JSON.stringify(answerDetails));
+                    await fetch(CONFIG.googleSheetUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData });
+                    statusDiv.innerHTML = '<span class="text-green-600 font-bold"><i class="fas fa-check"></i> Đã lưu!</span>';
+                } catch (e) { statusDiv.innerHTML = '<span class="text-red-600">Lỗi mạng.</span>'; }
+            }
+            renderApp();
+            
+            setTimeout(() => {
+                 Object.keys(TEST_DATA).forEach(sectionKey => {
+                    const section = TEST_DATA[sectionKey];
+                    section.questions.forEach(q => {
+                        const key = sectionKey + '-' + q.id;
+                        const userAns = (userAnswers[key] || '');
+                        const inputs = document.querySelectorAll('[name="'+key+'"], button[data-key="'+key+'"], input[id="input-'+key+'"]');
+                        inputs.forEach(i => i.disabled = true);
+                        const textInput = document.getElementById('input-'+key);
+                        if(textInput) textInput.value = userAns;
+                        
+                        const container = document.getElementById('container-'+key);
+                        if(container) {
+                             const correctAns = (q.answer || q.chinese_answer || '').trim().toUpperCase().replace(/\s/g, '');
+                             const isCorrect = userAns.trim().toUpperCase().replace(/\s/g, '') === correctAns;
+                             if(isCorrect) container.classList.add('bg-green-50', 'border-green-200');
+                             else container.classList.add('bg-red-50', 'border-red-200');
+                             
+                             if(!container.querySelector('.result-msg')) {
+                                 container.insertAdjacentHTML('beforeend', isCorrect ? 
+                                    '<div class="result-msg text-green-600 font-bold mt-2 text-sm"><i class="fas fa-check-circle"></i> Chính xác</div>' : 
+                                    '<div class="result-msg text-red-600 font-bold mt-2 text-sm"><i class="fas fa-times-circle"></i> Đáp án đúng: ' + (q.answer || q.chinese_answer) + '</div>');
+                             }
+                        }
+                         if(userAns) {
+                             const selectedBtn = document.querySelector('button[data-key="'+key+'"][data-val="'+userAns+'"]');
+                             if(selectedBtn) selectedBtn.classList.add('ring-2', 'ring-offset-1', isCorrect ? 'ring-green-500' : 'ring-red-500', isCorrect ? 'bg-green-100' : 'bg-red-100');
+                         }
+                    });
+                });
+                document.getElementById('student-name').value = name;
+                document.getElementById('student-class').value = className;
+                document.getElementById('student-name').disabled = true;
+                document.getElementById('student-class').disabled = true;
+            }, 100);
+        }
+
+        function renderSection(key, data) {
+            let content = '';
+            
+            // 1. MATCHING (Ghép cột)
+            if (key.includes('reading_matching')) {
+                 content = data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    const colA = q.column_a || [];
+                    const colB = q.column_b || [];
+                    
+                    const visualTable = `
+                        <div class="grid grid-cols-2 gap-0 mb-4 bg-white rounded border border-gray-300 text-lg">
+                            <div class="border-r border-gray-300">
+                                <div class="bg-gray-100 font-bold text-gray-700 p-2 border-b border-gray-300 text-center">Cột 1</div>
+                                ${colA.map((txt, i) => `<div class="p-3 col-match-line flex items-center"><span class="font-bold mr-2 w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-sm">${i+1}</span> <span class="font-serif">${txt}</span></div>`).join('')}
+                            </div>
+                            <div>
+                                <div class="bg-gray-100 font-bold text-gray-700 p-2 border-b border-gray-300 text-center">Cột 2</div>
+                                ${colB.map((txt, i) => `<div class="p-3 col-match-line flex items-center"><span class="font-bold mr-2 w-6 h-6 rounded-full bg-orange-100 text-orange-800 flex items-center justify-center text-sm">${String.fromCharCode(97+i).toUpperCase()}</span> <span class="font-serif">${txt}</span></div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    const optionsHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">` + 
+                        q.options.map(opt => `
+                            <button onclick="handleInput('${qKey}', '${opt.id}'); this.closest('.grid').querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','border-blue-500')); this.classList.add('bg-blue-100','border-blue-500')" data-key="${qKey}" data-val="${opt.id}" class="text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center transition-all shadow-sm">
+                                <span class="font-bold mr-3 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full group-hover:bg-white">${opt.id}</span> 
+                                <span class="font-medium">${opt.text}</span>
+                            </button>
+                        `).join('') + 
+                    `</div>`;
+                    return `<div id="container-${qKey}" class="mb-8 p-6 border border-gray-200 rounded-xl bg-gray-50">${visualTable} <div class="font-bold text-gray-700 mb-3 text-sm uppercase tracking-wide">Chọn kết quả nối đúng:</div> ${optionsHtml}</div>`;
+                }).join('');
+            }
+            
+            // 2. CONVERSATION SORTING (Sắp xếp hội thoại)
+            else if (key.includes('reading_conversation')) {
+                content = data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    const sentences = q.sentences || [];
+                    const listHtml = `
+                        <div class="mb-6 space-y-3">
+                            ${sentences.map((s) => `
+                                <div class="flex items-start bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                    <span class="font-bold text-white bg-blue-500 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0">${s.label}</span> 
+                                    <span class="text-lg font-serif text-gray-800 mt-1">${s.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    return `
+                        <div id="container-${qKey}" class="mb-8 p-6 border border-gray-200 rounded-xl bg-blue-50/30">
+                            <div class="mb-4 font-bold text-gray-800 text-lg">Sắp xếp các câu sau thành đoạn hội thoại hợp lý:</div>
+                            ${listHtml}
+                            <div class="flex items-center gap-4 bg-white p-4 rounded-lg border border-blue-100">
+                                <span class="font-bold text-gray-500">Trả lời:</span>
+                                <input type="text" id="input-${qKey}" oninput="handleInput('${qKey}', this.value.toUpperCase().replace(/\s/g,''))" placeholder="Ví dụ: DBAC" class="flex-grow border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none p-2 uppercase font-bold text-2xl text-center tracking-[0.5em] text-blue-700 placeholder-gray-300">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 italic">* Nhập thứ tự các chữ cái (A, B, C...) liền nhau.</p>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // 3. READING COMP (1 Passage for multiple questions)
+            else if (key.includes('reading_comp')) {
+                if(data.questions && data.questions.length > 0) {
+                    const passageHtml = `<div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-400 font-serif text-xl leading-loose text-gray-800 shadow-sm mb-8">${data.passage}</div>`;
+                    
+                    const questionsHtml = data.questions.map(q => {
+                        const qKey = key + '-' + q.id;
+                        const options = `<div class="grid grid-cols-1 gap-2 mt-3">` + 
+                            q.options.map(opt => `
+                                <button onclick="handleInput('${qKey}', '${opt.id}'); this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','border-blue-500')); this.classList.add('bg-blue-100','border-blue-500')" data-key="${qKey}" data-val="${opt.id}" class="text-left px-4 py-3 border rounded-lg hover:bg-gray-50 flex items-center transition-all">
+                                    <span class="font-bold mr-3 w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full text-xs">${opt.id}</span> 
+                                    <span class="font-medium">${opt.text}</span>
+                                </button>
+                            `).join('') + `</div>`;
+                        
+                        return `
+                            <div id="container-${qKey}" class="mb-6 p-5 border border-gray-100 rounded-xl bg-white hover:shadow-md transition-all">
+                                <div class="flex items-start gap-3 mb-2">
+                                    <span class="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded text-sm h-fit">Câu ${q.id}</span>
+                                    <div class="flex-grow pt-1 text-lg font-medium">${q.text}</div>
+                                </div>
+                                ${options}
+                            </div>
+                        `;
+                    }).join('');
+                    content = passageHtml + questionsHtml;
+                }
+            }
+
+            // ... (Standard Renderers remain same)
+            else if (key.includes('reading_cloze')) {
+                 content = data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    const optionsHtml = `<div class="grid grid-cols-1 gap-2 mt-4">` + 
+                        q.options.map(opt => `
+                            <button onclick="handleInput('${qKey}', '${opt.id}'); this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','border-blue-500')); this.classList.add('bg-blue-100','border-blue-500')" data-key="${qKey}" data-val="${opt.id}" class="text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 flex transition-all">
+                                <span class="font-bold mr-3">${opt.id}.</span> <span>${opt.text}</span>
+                            </button>
+                        `).join('') + 
+                    `</div>`;
+                    return `<div id="container-${qKey}" class="mb-6 p-4 border border-gray-100 rounded-xl bg-gray-50/50"><div class="bg-white p-4 rounded border border-gray-200 leading-loose text-lg font-serif mb-2">${q.passage}</div><div class="font-bold text-sm text-gray-500 uppercase">Chọn tổ hợp từ đúng:</div>${optionsHtml}</div>`;
+                }).join('');
+            }
+            else if (key.includes('listening')) {
+                content = data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    const safeAudioText = q.audio_script ? q.audio_script.replace(/"/g, '&quot;') : '';
+                    const audioBtn = q.audio_script ? `<button onclick="handlePlayAudio(this)" data-text="${safeAudioText}" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm"><i class="fas fa-volume-up"></i></button>` : '';
+
+                    let optionsHtml = '';
+                    if(key.includes('_tf')) {
+                         optionsHtml = `<div class="flex gap-3 mt-3"><button onclick="handleInput('${qKey}', 'T');" data-key="${qKey}" data-val="T" class="flex-1 py-2 border rounded hover:bg-blue-50">Đúng (True)</button><button onclick="handleInput('${qKey}', 'F');" data-key="${qKey}" data-val="F" class="flex-1 py-2 border rounded hover:bg-blue-50">Sai (False)</button></div>`;
+                    } else {
+                         optionsHtml = `<div class="grid grid-cols-1 gap-2 mt-3">` + q.options.map(opt => `<button onclick="handleInput('${qKey}', '${opt.id}');" data-key="${qKey}" data-val="${opt.id}" class="text-left px-4 py-3 border rounded hover:bg-gray-50 flex"><span class="font-bold mr-3 bg-gray-100 rounded w-6 h-6 flex items-center justify-center">${opt.id}</span> <span>${opt.text}</span></button>`).join('') + `</div>`;
+                    }
+                    return `<div id="container-${qKey}" class="mb-6 p-4 border border-gray-100 rounded-xl bg-gray-50/50 hover:bg-white transition-all"><div class="flex items-start gap-4 mb-2"><span class="font-bold text-gray-400 mt-2">#${q.id}</span>${audioBtn}<div class="flex-grow pt-1 text-lg text-gray-800 font-medium leading-relaxed">${q.statement || q.question_text || q.text}</div></div>${optionsHtml}</div>`;
+                }).join('');
+            }
+            else {
+                let pool = '';
+                if(data.options) pool = `<div class="flex flex-wrap gap-3 mb-6 p-4 bg-blue-50/50 border border-blue-100 rounded-lg justify-center">` + data.options.map(o => `<span class="bg-white px-3 py-1.5 border border-blue-200 rounded-md shadow-sm text-blue-800"><b>${o.id}:</b> ${o.text}</span>`).join('') + `</div>`;
+                content = pool + data.questions.map(q => {
+                    const qKey = key + '-' + q.id;
+                    return `<div id="container-${qKey}" class="mb-4 p-4 border border-gray-100 rounded-xl hover:shadow-sm transition-all bg-white"><div class="mb-3 text-lg flex gap-2"><span class="font-bold text-gray-400">#${q.id}</span><span>${q.text || q.vietnamese || (q.segments ? q.segments.join(' / ') : '')}</span></div><input type="text" id="input-${qKey}" oninput="handleInput('${qKey}', this.value.toUpperCase())" placeholder="Nhập đáp án..." class="w-full border-2 border-gray-200 p-3 rounded-lg focus:border-blue-500 focus:outline-none uppercase font-bold text-gray-700 tracking-wider transition-colors"></div>`;
+                }).join('');
+            }
+            return `<div class="mb-10"><h3 class="text-xl font-bold text-blue-800 mb-6 border-b pb-2 uppercase flex items-center"><i class="fas fa-bookmark mr-2 opacity-50"></i>${data.title}</h3>${content}</div>`;
+        }
+        renderApp();
+    </script>
+</body>
+</html>
+    
