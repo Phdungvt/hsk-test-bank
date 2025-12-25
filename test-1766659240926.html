@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉语水平考试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>const TEST_DATA={"listening_tf":{"title":"听力：判断对错 (Nghe: Phán đoán đúng sai)","questions":[{"id":1,"audio_script":"我家有三个人：爸爸，妈妈和我。","statement":"他家有四个人。","answer":"F"},{"id":2,"audio_script":"老师，您好！这是我的书。","statement":"他是学生，不是老师。","answer":"T"}]},"listening_mc":{"title":"听力：选择正确答案 (Nghe: Chọn đáp án đúng)","questions":[{"id":3,"audio_script":"A: 你好，请问，学校在哪里？ B: 学校在前面。","question_text":"学校在哪里？","options":[{"id":"A","text":"在家。"},{"id":"B","text":"在前面。"},{"id":"C","text":"在医院。"}],"answer":"B"},{"id":4,"audio_script":"我有一个姐姐和两个弟弟。","question_text":"她有几个弟弟？","options":[{"id":"A","text":"一个。"},{"id":"B","text":"两个。"},{"id":"C","text":"三个。"}],"answer":"B"}]},"reading_vocab":{"title":"阅读：选词填空 (Đọc: Chọn từ điền trống)","options":[{"id":"A","text":"学习"},{"id":"B","text":"老师"},{"id":"C","text":"爱"},{"id":"D","text":"在"}],"questions":[{"id":1,"text":"她是我们学校的汉语____。","answer":"B"},{"id":2,"text":"你____家吗？","answer":"D"},{"id":3,"text":"我____我的爸爸和妈妈。","answer":"C"},{"id":4,"text":"我们都在____汉语。","answer":"A"}]},"reading_matching":{"title":"阅读：搭配 (Đọc: Ghép cột)","questions":[{"id":1,"column_a":["1. 老师","2. 爸爸"],"column_b":["A. 学校","B. 妈妈"],"options":[{"id":"A","text":"1-A, 2-B"},{"id":"B","text":"1-B, 2-A"},{"id":"C","text":"1-A, 2-A"}],"answer":"A"},{"id":2,"column_a":["1. 学生","2. 学习"],"column_b":["A. 汉语","B. 学校"],"options":[{"id":"A","text":"1-A, 2-B"},{"id":"B","text":"1-B, 2-A"},{"id":"C","text":"1-B, 2-B"}],"answer":"B"}]},"reading_conversation":{"title":"阅读：排列对话 (Đọc: Sắp xếp hội thoại)","questions":[{"id":1,"sentences":[{"label":"a","text":"你家有几口人？"},{"label":"b","text":"我家有五口人。"}],"options":[{"id":"A","text":"a, b"},{"id":"B","text":"b, a"}],"answer":"A"},{"id":2,"sentences":[{"label":"a","text":"这是你的汉语书吗？"},{"label":"b","text":"不是，这是我的笔。"}],"options":[{"id":"A","text":"a, b"},{"id":"B","text":"b, a"}],"answer":"A"}]}};const CONFIG={"levelGroup":"Sơ cấp","hskLevel":"HSK 1","topic":"Gia đình & Trường học","teacherName":"","googleSheetUrl":"","types":{"listening_tf":{"id":"listening_tf","label":"Nghe: Đúng/Sai","group":"listening","enabled":true,"count":2,"points":2},"listening_mc":{"id":"listening_mc","label":"Nghe: Trắc nghiệm","group":"listening","enabled":true,"count":2,"points":2},"reading_vocab":{"id":"reading_vocab","label":"Đọc: Điền từ đơn","group":"reading","enabled":true,"count":2,"points":2},"reading_matching":{"id":"reading_matching","label":"Đọc: Ghép cột (Nối)","group":"reading","enabled":true,"count":2,"points":2},"reading_conversation":{"id":"reading_conversation","label":"Đọc: Xếp hội thoại","group":"reading","enabled":true,"count":2,"points":2},"reading_comp":{"id":"reading_comp","label":"Đọc: Đọc hiểu đoạn văn","group":"reading","enabled":false,"count":0,"points":0},"reading_cloze":{"id":"reading_cloze","label":"Đọc: Điền đoạn văn (Combo)","group":"reading","enabled":false,"count":1,"points":2},"writing_order":{"id":"writing_order","label":"Viết: Sắp xếp câu","group":"writing","enabled":false,"count":0,"points":1},"writing_trans":{"id":"writing_trans","label":"Viết: Dịch Việt-Trung","group":"writing","enabled":false,"count":2,"points":1.5}}};</script>
+    <style>.warning-toast{animation:slideIn 0.5s ease-out forwards}@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}.col-match-line{border-bottom:1px dashed #e5e7eb;padding:8px 0}.col-match-line:last-child{border-bottom:none}body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-family: 'Noto Sans SC', sans-serif;}input,textarea{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}</style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-20"><div id="app-root"></div><div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2"></div>
+<script>
+let userAnswers={},showResults=false,score=0,monitoringData={thoatManHinh:0,saoChep:0,dan:0};
+function showWarning(msg){const c=document.getElementById('toast-container'),t=document.createElement('div');t.className='warning-toast bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-center max-w-sm';t.innerHTML='<i class="fas fa-exclamation-triangle mr-3 text-xl"></i><div><p class="font-bold">警告 (Cảnh báo)</p><p class="text-sm">'+msg+'</p></div>';c.appendChild(t);setTimeout(()=>t.remove(),3000)}
+document.addEventListener('visibilitychange', ()=>{if(document.hidden&&!showResults){monitoringData.thoatManHinh++;showWarning('检测到切屏行为！(Phát hiện thoát màn hình)')}});
+document.addEventListener('copy',e=>{if(!showResults){monitoringData.saoChep++;showWarning('禁止复制！(Cấm sao chép)');e.preventDefault()}});
+document.addEventListener('paste',e=>{if(!showResults){monitoringData.dan++;showWarning('禁止粘贴！(Cấm dán)');e.preventDefault()}});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+function renderApp(){
+    const root=document.getElementById('app-root');
+    const teacherDisplay=CONFIG.teacherName?`<div class="text-blue-100 text-sm mt-1"><i class="fas fa-chalkboard-teacher mr-1"></i> 教师: <b>${CONFIG.teacherName}</b></div>`:'';
+    root.innerHTML=`
+    <div class="bg-blue-800 text-white p-4 shadow-md sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto flex justify-between items-center"><div><h1 class="font-bold text-xl"><i class="fas fa-graduation-cap mr-2"></i>HSK 在线考试</h1>${teacherDisplay}</div><div class="text-right text-sm"><div>ID: ${Date.now().toString().slice(-6)}</div></div></div>
+    </div>
+    <div class="max-w-4xl mx-auto p-4 mt-6">
+        <div class="bg-white p-8 rounded-t-xl shadow border-b-2 border-dashed border-gray-300 text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-red-100 text-red-600 px-3 py-1 text-xs font-bold border-l border-b border-red-200"><i class="fas fa-shield-alt mr-1"></i> 考试监控中</div>
+            <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2 uppercase">${CONFIG.topic}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 px-4 mt-6 text-left">
+                <div><label class="text-xs font-bold uppercase text-gray-400">姓名 (Họ tên) (*)</label><input id="s-name" type="text" class="w-full border-b-2 border-gray-300 py-1 focus:outline-none focus:border-blue-600"></div>
+                <div><label class="text-xs font-bold uppercase text-gray-400">班级 (Lớp) (*)</label><input id="s-class" type="text" class="w-full border-b-2 border-gray-300 py-1 focus:outline-none focus:border-blue-600"></div>
+            </div>
+            <div class="mt-6"><span id="score-display" class="font-bold text-4xl text-gray-300">${showResults?score:'--'}</span><span class="text-xl text-gray-400">/20</span><div id="submit-status" class="h-6 text-sm mt-2"></div></div>
+        </div>
+        <div class="bg-white p-8 rounded-b-xl shadow-lg space-y-8">${Object.keys(TEST_DATA).map(k=>renderSection(k,TEST_DATA[k])).join('')}</div>
+    </div>
+    <div class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-40">
+        ${!showResults?`<button id="btn-sub" onclick="check()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-full font-bold shadow-lg">提交试卷 (Nộp Bài)</button>`:`<button onclick="location.reload()" class="bg-gray-800 text-white px-8 py-3 rounded-full">再做一次 (Làm Lại)</button>`}
+    </div>`;
+}
+
+function play(txt){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='zh-CN';u.rate=0.8;window.speechSynthesis.speak(u)}
+function inp(k,v){if(!showResults){userAnswers[k]=v;const e=document.getElementById('i-'+k);if(e)e.value=v}}
+
+async function check(){
+    const n=document.getElementById('s-name').value.trim(),c=document.getElementById('s-class').value.trim();
+    if(!n||!c){alert('请输入姓名和班级 (Nhập họ tên và lớp)!');return}
+    if(!confirm('确定提交吗 (Nộp bài)?'))return;
+    document.getElementById('btn-sub').disabled=true;
+    let cor=0,details=[];
+    Object.keys(TEST_DATA).forEach(sk=>{
+        const sec=TEST_DATA[sk],pConfig=Object.values(CONFIG.types).find(t=>sk.includes(t.id)),pts=pConfig?pConfig.points:0;
+        sec.questions.forEach(q=>{
+            const k=sk+'-'+q.id,u=(userAnswers[k]||'').trim().toUpperCase().replace(/\s/g,''),
+            a=(q.answer||q.chinese_answer||'').trim().toUpperCase().replace(/\s/g,''),isC=u===a;
+            if(isC)cor+=pts; details.push({questionNumber:k,isCorrect:isC});
+            const div=document.getElementById('c-'+k);
+            if(div){
+                div.classList.add(isC?'bg-green-50':'bg-red-50',isC?'border-green-200':'border-red-200');
+                if(!div.querySelector('.res')) div.insertAdjacentHTML('beforeend',`<div class="res mt-2 text-sm font-bold ${isC?'text-green-600':'text-red-600'}">${isC?'✓ 回答正确 (Chính xác)':'✕ 参考答案 (Đáp án): '+ (q.answer||q.chinese_answer)}</div>`);
+            }
+        });
+    });
+    score=cor.toFixed(1); showResults=true;
+    if(CONFIG.googleSheetUrl){
+        const st=document.getElementById('submit-status');st.innerHTML='正在提交...';
+        try{
+            const fd=new URLSearchParams();fd.append('timestamp',new Date().toLocaleString('vi-VN'));
+            fd.append('name',n);fd.append('class',c);fd.append('score',score+'/20');
+            fd.append('examCode',CONFIG.topic);fd.append('monitoringLog',JSON.stringify(monitoringData));
+            fd.append('answerDetails',JSON.stringify(details));
+            await fetch(CONFIG.googleSheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:fd});
+            st.innerHTML='<span class="text-green-600">提交成功 (Đã lưu)!</span>';
+        }catch(e){st.innerHTML='<span class="text-red-600">提交失败 (Lỗi)</span>'}
+    }
+    renderApp();
+    setTimeout(()=>{
+        document.getElementById('s-name').value=n;document.getElementById('s-class').value=c;
+        document.getElementById('s-name').disabled=true;document.getElementById('s-class').disabled=true;
+        Object.keys(TEST_DATA).forEach(sk=>{
+            TEST_DATA[sk].questions.forEach(q=>{
+                const k=sk+'-'+q.id,u=userAnswers[k],isC=(u||'').toUpperCase().replace(/\s/g,'')===(q.answer||q.chinese_answer||'').toUpperCase().replace(/\s/g,'');
+                const i=document.getElementById('i-'+k);if(i){i.value=u||'';i.disabled=true}
+                const d=document.getElementById('c-'+k);
+                if(d){
+                    d.classList.add(isC?'bg-green-50':'bg-red-50',isC?'border-green-200':'border-red-200');
+                    if(!d.querySelector('.res')) d.insertAdjacentHTML('beforeend',`<div class="res mt-2 text-sm font-bold ${isC?'text-green-600':'text-red-600'}">${isC?'✓ 回答正确 (Chính xác)':'✕ 参考答案 (Đáp án): '+ (q.answer||q.chinese_answer)}</div>`);
+                }
+                if(u){const b=document.querySelector(`button[data-k="${k}"][data-v="${u}"]`);if(b)b.classList.add('ring-2',isC?'ring-green-500':'ring-red-500')}
+                document.querySelectorAll(`[data-k="${k}"]`).forEach(b=>b.disabled=true);
+            })
+        })
+    },100);
+}
+
+function renderSection(k,d){
+    const renderQ=q=>{
+        const qk=k+'-'+q.id, aud=q.audio_script?`<button onclick="play('${q.audio_script.replace(/'/g,"\\'")}')" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 inline-flex items-center justify-center mr-2"><i class="fas fa-volume-up"></i></button>`:'';
+        let html='';
+        if(k.includes('matching')){
+            const A=q.column_a||[],B=q.column_b||[];
+            html=`<div class="grid grid-cols-2 gap-4 mb-4 bg-white p-3 rounded border text-sm"><div class="border-r pr-2"><div class="font-bold text-gray-500 mb-2 border-b pb-1">第一栏</div>${A.map((t,i)=>`<div class="py-1 border-b border-dashed"><b class="mr-1">${i+1}.</b>${t}</div>`).join('')}</div><div class="pl-2"><div class="font-bold text-gray-500 mb-2 border-b pb-1">第二栏</div>${B.map((t,i)=>`<div class="py-1 border-b border-dashed"><b class="mr-1">${String.fromCharCode(65+i)}.</b>${t}</div>`).join('')}</div></div>`;
+            html+=`<div class="text-sm font-bold text-gray-600 mb-2">请选择匹配项 (Chọn cặp đúng):</div>`;
+            html+=`<div class="grid grid-cols-2 gap-2">`+q.options.map(o=>`<button onclick="inp('${qk}','${o.id}');this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','ring-2'));this.classList.add('bg-blue-100','ring-2')" data-k="${qk}" data-v="${o.id}" class="text-left p-2 border rounded flex items-center hover:bg-gray-50"><b class="mr-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">${o.id}</b>${o.text}</button>`).join('')+`</div>`;
+        }else if(k.includes('conversation')){
+            html=`<div class="mb-3 space-y-2">`+(q.sentences||[]).map(s=>`<div class="bg-white p-2 border rounded flex"><b class="text-blue-600 mr-2">${s.label}</b>${s.text}</div>`).join('')+`</div>`;
+            html+=`<div class="text-sm font-bold text-gray-600 mb-2 mt-2">请选择正确顺序 (Chọn thứ tự đúng):</div>`;
+            html+=`<div class="grid grid-cols-2 gap-2">`+q.options.map(o=>`<button onclick="inp('${qk}','${o.id}');this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','ring-2'));this.classList.add('bg-blue-100','ring-2')" data-k="${qk}" data-v="${o.id}" class="text-left p-2 border rounded flex items-center hover:bg-gray-50"><b class="mr-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">${o.id}</b>${o.text}</button>`).join('')+`</div>`;
+        }else if(k.includes('writing_order')){
+            html=`<div class="flex flex-wrap gap-2 mb-3 justify-center">`+(q.segments||[]).map((s,i)=>`<span class="bg-white border px-2 py-1 rounded shadow-sm"><b class="text-blue-600 mr-1">${String.fromCharCode(65+i)}</b>${s}</span>`).join('')+`</div>`;
+            html+=`<div class="flex items-center gap-2 bg-white p-2 border rounded"><span class="font-bold text-gray-500">答案 (Đáp án):</span><input id="i-${qk}" type="text" oninput="inp('${qk}',this.value.toUpperCase())" class="flex-grow border-b-2 p-1 text-center font-bold text-lg uppercase focus:outline-none" placeholder="例如: ABC"></div>`;
+        }else if(k.includes('reading_comp')||k.includes('listening')||k.includes('vocab')){
+            html=`<div class="flex gap-2 mb-2">${aud}<div class="text-lg">${q.statement||q.question_text||q.text}</div></div>`;
+            if(k.includes('_tf')){
+                html+=`<div class="flex gap-2"><button onclick="inp('${qk}','T');this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-600','text-white'));this.classList.add('bg-blue-600','text-white')" data-k="${qk}" data-v="T" class="flex-1 py-2 border rounded">对 (Đúng)</button><button onclick="inp('${qk}','F');this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-600','text-white'));this.classList.add('bg-blue-600','text-white')" data-k="${qk}" data-v="F" class="flex-1 py-2 border rounded">错 (Sai)</button></div>`;
+            }else{
+                let opts = q.options || (d.options) || [];
+                html+=`<div class="grid gap-2">`+opts.map(o=>`<button onclick="inp('${qk}','${o.id}');this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('bg-blue-100','ring-2'));this.classList.add('bg-blue-100','ring-2')" data-k="${qk}" data-v="${o.id}" class="text-left p-2 border rounded flex items-center hover:bg-gray-50"><b class="mr-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">${o.id}</b>${o.text}</button>`).join('')+`</div>`;
+            }
+        }else{
+            html=`<div class="mb-2 text-lg"><span class="font-bold text-gray-400">#${q.id}</span> ${q.text||q.vietnamese}</div><input id="i-${qk}" type="text" oninput="inp('${qk}',this.value.toUpperCase())" class="w-full border p-2 rounded uppercase font-bold">`;
+        }
+        return `<div id="c-${qk}" class="mb-6 p-4 border rounded-xl hover:shadow-sm bg-white">${html}</div>`;
+    };
+    let head='';
+    if(k.includes('reading_comp')) head=`<div class="bg-orange-50 p-4 rounded mb-4 font-serif text-lg border-l-4 border-orange-400">${d.passage||(d.questions[0]&&d.questions[0].passage)||''}</div>`;
+    else if(k.includes('reading_vocab') && d.options) head=`<div class="flex flex-wrap gap-2 mb-4 justify-center bg-gray-100 p-3 rounded">`+(d.options||[]).map(o=>`<span class="bg-white px-2 border rounded"><b>${o.id}:</b> ${o.text}</span>`).join('')+`</div>`;
+    else if(k.includes('reading_cloze')) head=`<div class="bg-gray-50 p-4 rounded mb-4 text-lg leading-loose border-l-4 border-gray-400">${d.passage||(d.questions[0]&&d.questions[0].passage)||''}</div>`;
+
+    return `<div class="mb-8"><h3 class="text-xl font-bold text-blue-800 mb-4 border-b pb-2">${d.title}</h3>${head}${d.questions.map(renderQ).join('')}</div>`;
+}
+renderApp();
+</script></body></html>
